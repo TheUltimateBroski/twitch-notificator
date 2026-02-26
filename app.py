@@ -77,23 +77,17 @@ def check_stream_live(token):
     return response.json().get("data", [])
 
 
-def send_notification(stream, profile_image):
+def send_notification(stream):
     gif = random.choice(GIFS)
 
     payload = {
-        "content": f"@everyone <:TwitchSymbol:1474627947599237245> ¡{USERNAME} está en vivo!",
+        "content": f"@everyone 🔴 ¡{USERNAME} está en vivo!",
         "embeds": [{
-            "author": {
-                "name": f"{USERNAME} está en vivo",
-                "icon_url": profile_image
-            },
             "title": stream["title"],
             "url": f"https://twitch.tv/{USERNAME}",
             "description": f"🎮 Jugando: {stream['game_name']}",
             "color": 6570404,
-            "image": {
-                "url": gif
-            }
+            "image": {"url": gif}
         }]
     }
 
@@ -109,8 +103,7 @@ def twitch_checker():
             stream_data = check_stream_live(token)
 
             if stream_data and not was_live:
-                profile_image = get_user_profile_image(token)
-                send_notification(stream_data[0], profile_image)
+                send_notification(stream_data[0])
                 was_live = True
 
             elif not stream_data:
