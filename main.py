@@ -32,21 +32,23 @@ def send_notification(stream):
     thumbnail = stream["thumbnail_url"].replace("{width}", "1280").replace("{height}", "720")
 
     payload = {
-        "content": "@everyone"
-        "embeds": [{
-            "title": stream["title"],
-            "url": f"https://twitch.tv/{USERNAME}",
-            "color": 2832289,
-            "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/b9270b10-6bc4-468f-838e-7d0130f51176-profile_image-70x70.png"
+  "content": "@everyone",
+  "embeds": [{
+    "color": 2832289,
+    "author": {
+      "name": "stream["title"]",
+      "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/b9270b10-6bc4-468f-838e-7d0130f51176-profile_image-70x70.png"
     },
     "description": "*Vayan a tirarle cosas a Ryu que no me paga lo suficiente*",
     "fields": [
       {"name": "<:TwitchSymbol:1474627947599237245> Twitch", "value": "[Twitch](https://www.twitch.tv/ryusenvt)", "inline": true},
       {"name": "<:Youtube_logo:1474628135093010442> YouTube", "value": "[YouTube](https://www.youtube.com/@RyuSenVOD)", "inline": true}
     ],
-            "image": {"url": thumbnail}
-        }]
+    "image": {
+      "url": "https://media.tenor.com/JCL2ng6ARjIAAAAM/chen-endfield.gif"
     }
+  }]
+}
 
     requests.post(WEBHOOK_URL, json=payload)
 
