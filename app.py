@@ -14,7 +14,6 @@ WEBHOOK_URL = os.environ["WEBHOOK_URL"]
 
 LAST_COMMIT_FILE = "last_commit.txt"
 
-# 🎬 GIFs que se mostrarán en el embed
 GIFS = [
     "https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif",
     "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
@@ -24,12 +23,9 @@ GIFS = [
 was_live = False
 
 
-# 🔥 Detectar nuevo deploy
 def send_startup_message_if_new_deploy():
     current_commit = os.environ.get("RENDER_GIT_COMMIT")
-
     if not current_commit:
-        print("No commit detectado.")
         return
 
     if os.path.exists(LAST_COMMIT_FILE):
@@ -39,7 +35,6 @@ def send_startup_message_if_new_deploy():
         previous_commit = None
 
     if previous_commit == current_commit:
-        print("Mismo commit, no se envía mensaje.")
         return
 
     with open(LAST_COMMIT_FILE, "w") as f:
@@ -49,16 +44,13 @@ def send_startup_message_if_new_deploy():
         "content": "🚀 Nuevo deploy detectado!",
         "embeds": [{
             "title": "Bot actualizado correctamente",
-            "description": f"Commit: `{current_commit[:7]}`\nUsuario monitoreado: {USERNAME}",
+            "description": f"Commit: `{current_commit[:7]}`\nUsuario: {USERNAME}",
             "color": 3066993,
-            "image": {
-                "url": random.choice(GIFS)
-            }
+            "image": {"url": random.choice(GIFS)}
         }]
     }
 
     requests.post(WEBHOOK_URL, json=payload)
-    print("Mensaje de nuevo deploy enviado.")
 
 
 def get_access_token():
@@ -95,9 +87,7 @@ def send_notification(stream):
             "url": f"https://twitch.tv/{USERNAME}",
             "description": f"🎮 Jugando: {stream['game_name']}",
             "color": 6570404,
-            "image": {
-                "url": gif
-            }
+            "image": {"url": gif}
         }]
     }
 
@@ -106,7 +96,6 @@ def send_notification(stream):
 
 def twitch_checker():
     global was_live
-    print("Monitor Twitch iniciado...")
 
     while True:
         try:
@@ -116,11 +105,9 @@ def twitch_checker():
             if stream_data and not was_live:
                 send_notification(stream_data[0])
                 was_live = True
-                print("Notificación enviada")
 
             elif not stream_data:
                 was_live = False
-                print("Offline")
 
             time.sleep(300)
 
@@ -134,13 +121,12 @@ def home():
     return "Bot Twitch activo 🚀"
 
 
-if __name__ == "__main__":
-    # 🔥 Solo manda mensaje si hay nuevo deploy
+# 🔥 ESTA PARTE SE EJECUTA TAMBIÉN CON GUNICORN
+def start_background_tasks():
     send_startup_message_if_new_deploy()
-
     thread = threading.Thread(target=twitch_checker)
     thread.daemon = True
     thread.start()
 
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+
+start_background_tasks()
