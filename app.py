@@ -81,7 +81,7 @@ def send_notification(stream):
     gif = random.choice(GIFS)
 
     payload = {
-        "content": f"@everyone 🔴 ¡{USERNAME} está en vivo!",
+        "content": f"@everyone <:TwitchSymbol:1474627947599237245> ¡{USERNAME} ya abrió el stream, vayan a tirarle cosas!",
         "embeds": [{
             "title": stream["title"],
             "url": f"https://twitch.tv/{USERNAME}",
