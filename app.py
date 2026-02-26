@@ -77,17 +77,23 @@ def check_stream_live(token):
     return response.json().get("data", [])
 
 
-def send_notification(stream):
+def send_notification(stream, profile_image):
     gif = random.choice(GIFS)
 
     payload = {
-        "content": f"@everyone 🔴 ¡{USERNAME} está en vivo!",
+        "content": f"@everyone <:TwitchSymbol:1474627947599237245> ¡{USERNAME} está en vivo!",
         "embeds": [{
+            "author": {
+                "name": f"{USERNAME} está en vivo",
+                "icon_url": profile_image
+            },
             "title": stream["title"],
             "url": f"https://twitch.tv/{USERNAME}",
             "description": f"🎮 Jugando: {stream['game_name']}",
             "color": 6570404,
-            "image": {"url": gif}
+            "image": {
+                "url": gif
+            }
         }]
     }
 
