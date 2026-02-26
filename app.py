@@ -12,6 +12,8 @@ CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 USERNAME = "ryusenvt"
 WEBHOOK_URL = os.environ["WEBHOOK_URL"]
 
+LAST_COMMIT_FILE = "last_commit.txt"
+
 # 🎬 GIFs que se mostrarán en el embed
 GIFS = [
     "https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif",
@@ -20,6 +22,43 @@ GIFS = [
 ]
 
 was_live = False
+
+
+# 🔥 Detectar nuevo deploy
+def send_startup_message_if_new_deploy():
+    current_commit = os.environ.get("RENDER_GIT_COMMIT")
+
+    if not current_commit:
+        print("No commit detectado.")
+        return
+
+    if os.path.exists(LAST_COMMIT_FILE):
+        with open(LAST_COMMIT_FILE, "r") as f:
+            previous_commit = f.read().strip()
+    else:
+        previous_commit = None
+
+    if previous_commit == current_commit:
+        print("Mismo commit, no se envía mensaje.")
+        return
+
+    with open(LAST_COMMIT_FILE, "w") as f:
+        f.write(current_commit)
+
+    payload = {
+        "content": "🚀 Nuevo deploy detectado!",
+        "embeds": [{
+            "title": "Bot actualizado correctamente",
+            "description": f"Commit: `{current_commit[:7]}`\nUsuario monitoreado: {USERNAME}",
+            "color": 3066993,
+            "image": {
+                "url": random.choice(GIFS)
+            }
+        }]
+    }
+
+    requests.post(WEBHOOK_URL, json=payload)
+    print("Mensaje de nuevo deploy enviado.")
 
 
 def get_access_token():
@@ -96,6 +135,9 @@ def home():
 
 
 if __name__ == "__main__":
+    # 🔥 Solo manda mensaje si hay nuevo deploy
+    send_startup_message_if_new_deploy()
+
     thread = threading.Thread(target=twitch_checker)
     thread.daemon = True
     thread.start()
