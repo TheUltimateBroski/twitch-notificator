@@ -109,8 +109,9 @@ def twitch_checker():
             stream_data = check_stream_live(token)
 
             if stream_data and not was_live:
-                send_notification(stream_data[0])
-                was_live = True
+    profile_image = get_user_profile_image(token)
+    send_notification(stream_data[0], profile_image)
+    was_live = True
 
             elif not stream_data:
                 was_live = False
