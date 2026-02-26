@@ -15,9 +15,9 @@ WEBHOOK_URL = os.environ["WEBHOOK_URL"]
 LAST_COMMIT_FILE = "last_commit.txt"
 
 GIFS = [
-    "https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif",
-    "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
-    "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
+    "https://media.tenor.com/JCL2ng6ARjIAAAAM/chen-endfield.gif",
+    "https://i.pinimg.com/originals/74/82/a8/7482a87e51359e6bb08084511c89a098.gif",
+    "https://media.tenor.com/FQTla-UcgOQAAAAM/amiya-arknights.gif"
 ]
 
 was_live = False
@@ -123,7 +123,6 @@ def home():
 
 # 🔥 ESTA PARTE SE EJECUTA TAMBIÉN CON GUNICORN
 def start_background_tasks():
-    send_startup_message_if_new_deploy()
     thread = threading.Thread(target=twitch_checker)
     thread.daemon = True
     thread.start()
